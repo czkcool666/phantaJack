@@ -1,0 +1,31 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+}
+
+.title{
+    font-size: 10rem;
+    color: white;
+    margin-bottom: 2rem;
+    font-family: 'Arial', sans-serif;
+}
+
+.loginButton {
+    background-color: #ffffff;
+    color: #6e8efb;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.loginButton:hover {
+    background-color: #6e8efb;
+    color: white;
+}
