@@ -1,40 +1,66 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# PhantaField Frontend
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+This project is a Next.js application designed to implement a Web3 authentication system using Magic.link for OAuth (Google login), NextAuth.js for authentication handling, Moralis for interacting with the blockchain, and Web3 for Ethereum provider connections.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Prerequisites
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Before you begin, ensure you have met the following requirements:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- You have installed [Node.js](https://nodejs.org/) and [Yarn](https://yarnpkg.com/).
+- You have a GitHub account and have cloned this repository.
+- You have configured environment variables for Magic.link, Google OAuth, NextAuth.js, and Moralis.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+To set up the project locally, follow these steps:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```sh
+   git clone https://github.com/czkcool666/phantaJack.git
+   cd phantaJack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. intsall dependencies
+   yarn install
 
-## Deploy on Vercel
+3. set up the environment variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+create ".env.local" file in the root of the project including (example):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-=======
-# phantaJack
->>>>>>> 10e8d3a9d032320bc0764d8c54f03bf3cf76daaf
+
+GOOGLE_CLIENT_ID=758789077626-n7bpsp1trgl8e3o07har9800usv3dr1t.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+NEXTAUTH_SECRET=your-nextauth-secret
+NEXT_PUBLIC_MAGIC_LINK_API_KEY=pk_live_051CED0A2B7C5630
+MORALIS_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImU0ODg5MzYxLTA1ZTEtNGYxNi1iZWM5LTIwNzMzM2FkOGUwOCIsIm9yZ0lkIjoiMzkzMDk0IiwidXNlcklkIjoiNDAzOTE5IiwidHlwZUlkIjoiMzcwNjQyM2UtNzI4Yy00MDM2LTkxNmYtYzk5NjE5NjBhNWU4IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MTYyNjkyNDAsImV4cCI6NDg3MjAyOTI0MH0.jCieOc6tdgEn8GNGVsxx1LfT_5K1bqMO7H8lRJjT-nE
+
+APP_DOMAIN=http://localhost:3000
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_MORALIS_API_KEY=NEXT_PUBLIC_MORALIS_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6ImU0ODg5MzYxLTA1ZTEtNGYxNi1iZWM5LTIwNzMzM2FkOGUwOCIsIm9yZ0lkIjoiMzkzMDk0IiwidXNlcklkIjoiNDAzOTE5IiwidHlwZUlkIjoiMzcwNjQyM2UtNzI4Yy00MDM2LTkxNmYtYzk5NjE5NjBhNWU4IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MTYyNjkyNDAsImV4cCI6NDg3MjAyOTI0MH0.jCieOc6tdgEn8GNGVsxx1LfT_5K1bqMO7H8lRJjT-nE
+NEXT_PUBLIC_MAGIC_SECRET_KEY=sk_live_0875FDB1D155DEFB
+NEXT_PUBLIC_MAGIC_REDIRECT_URI=http://localhost:3000/callback
+
+create "env.production", including(example):
+NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY=pk_live_051CED0A2B7C5630
+NEXT_PUBLIC_MAGIC_REDIRECT_URI=https://auth.magic.link/v1/oauth2/q5M3PemfFP5C9XcYGVGEVssrzFeQv-CR6ZTeCGR2oDk=/callback
+
+
+
+
+4. generate SSH keys for GitHub (if necessary):
+ssh-keygen -t ed25519 -C "your_email@example.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub
+
+---------------------------------------------------------------
+RUN THE PROJECT
+After completing the setup, you can start the development server:
+yarn dev 
+(The application should now be running on http://localhost:3000.)
+
+Then type:
+yarn build
+yarn start
