@@ -42,7 +42,7 @@ NEXT_PUBLIC_MORALIS_API_KEY=NEXT_PUBLIC_MORALIS_API_KEY=eyJhbGciOiJIUzI1NiIsInR5
 NEXT_PUBLIC_MAGIC_SECRET_KEY=sk_live_0875FDB1D155DEFB
 NEXT_PUBLIC_MAGIC_REDIRECT_URI=http://localhost:3000/callback
 
-create "env.production", including(example):
+create ".env.production", including(example):
 NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY=pk_live_051CED0A2B7C5630
 NEXT_PUBLIC_MAGIC_REDIRECT_URI=https://auth.magic.link/v1/oauth2/q5M3PemfFP5C9XcYGVGEVssrzFeQv-CR6ZTeCGR2oDk=/callback
 
