@@ -42,7 +42,11 @@ NEXT_PUBLIC_MORALIS_API_KEY=NEXT_PUBLIC_MORALIS_API_KEY=eyJhbGciOiJIUzI1NiIsInR5
 NEXT_PUBLIC_MAGIC_SECRET_KEY=sk_live_0875FDB1D155DEFB
 NEXT_PUBLIC_MAGIC_REDIRECT_URI=http://localhost:3000/callback
 
+<<<<<<< HEAD
 create "env.production", including(example):
+=======
+create ".env.production", including(example):
+>>>>>>> 92b5083f8856a7a905e54dc05ebf32c6fcc8300b
 NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY=pk_live_051CED0A2B7C5630
 NEXT_PUBLIC_MAGIC_REDIRECT_URI=https://auth.magic.link/v1/oauth2/q5M3PemfFP5C9XcYGVGEVssrzFeQv-CR6ZTeCGR2oDk=/callback
 
@@ -50,7 +54,11 @@ NEXT_PUBLIC_MAGIC_REDIRECT_URI=https://auth.magic.link/v1/oauth2/q5M3PemfFP5C9Xc
 
 
 4. generate SSH keys for GitHub (if necessary):
+<<<<<<< HEAD
    ssh-keygen -t ed25519 -C "your_email@example.com"
+=======
+ssh-keygen -t ed25519 -C "your_email@example.com"
+>>>>>>> 92b5083f8856a7a905e54dc05ebf32c6fcc8300b
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 cat ~/.ssh/id_ed25519.pub
@@ -63,4 +71,8 @@ yarn dev
 
 Then type:
 yarn build
+<<<<<<< HEAD
 yarn start
+=======
+yarn start
+>>>>>>> 92b5083f8856a7a905e54dc05ebf32c6fcc8300b
