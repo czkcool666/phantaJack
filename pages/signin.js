@@ -51,11 +51,18 @@ const SignIn = ({ magic }) => {
         });
 
         // Request challenge from Moralis
-        const { message } = await Moralis.Auth.requestMessage({
+        const requestParams = {
           address,
           chain: '0x1', // Mainnet
           networkType: 'evm',
-        });
+          domain: window.location.origin,
+          uri: window.location.origin,
+          timeout: 120, // Valid timeout
+        };
+
+        console.log('Request Params:', requestParams);
+
+        const { message } = await Moralis.Auth.requestMessage(requestParams);
 
         console.log('Challenge Message:', message);
 
@@ -73,14 +80,18 @@ const SignIn = ({ magic }) => {
         console.log('Authenticated user:', user);
 
         // Sign in with NextAuth.js
-        const signInResponse = await signIn('credentials', {
+        const signInParams = {
           message,
           signature,
           redirect: false,
           callbackUrl: '/user',
-        });
+        };
 
-        console.log('signIn Response:', signInResponse);
+        console.log('SignIn Params:', signInParams);
+
+        const signInResponse = await signIn('credentials', signInParams);
+
+        console.log('SignIn Response:', signInResponse);
 
         if (signInResponse.error) {
           console.error('Error during sign-in:', signInResponse.error);
@@ -91,7 +102,7 @@ const SignIn = ({ magic }) => {
         }
       }
     } catch (error) {
-      console.error('Error during MetaMask authentication:', error.message);
+      console.error('Error during MetaMask authentication:', error);
     }
   };
 
