@@ -1,6 +1,9 @@
+// /pages/_app.js
 import '../styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import { initializeApp, getApps } from 'firebase/app';
+import { auth, provider, db } from 'firebaseClient'; // Ensure the import path is correct
 
 let magic;
 
@@ -17,6 +20,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       setMagicInstance(magic);
     } else {
       setMagicInstance(magic);
+    }
+
+    // Initialize Firebase
+    if (!getApps().length) {
+      initializeApp(firebaseConfig); // Only initialize if no apps exist
     }
   }, []);
 

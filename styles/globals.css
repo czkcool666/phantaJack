@@ -12,3 +12,8 @@ body {
 .bg-dark-tech {
   background-color: #1a1a1a; /* Dark tech-themed color */
 }
+
+
+.common-btn {
+  width: 13rem; /* Adjust this value as needed */
+}
