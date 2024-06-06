@@ -1,4 +1,3 @@
-
 // firebaseClient.js
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
@@ -20,15 +19,13 @@ console.log("Firebase initialized:", app.name);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
-if (typeof window !== 'undefined') {
-  // Use debug token for App Check
-  self.FIREBASE_APPCHECK_DEBUG_TOKEN = '9D05715E-AB57-4B23-B446-95A239E1843D';
 
+if (typeof window !== 'undefined') {
+  self.FIREBASE_APPCHECK_DEBUG_TOKEN = '9D05715E-AB57-4B23-B446-95A239E1843D';
   const appCheck = initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_SITE_KEY'),
+    provider: new ReCaptchaV3Provider('6LdIce0pAAAAAGDioZCkFwa9jYAmP7le4bweWaYq'),
     isTokenAutoRefreshEnabled: true,
   });
 }
-
 
 export { auth, provider, db };

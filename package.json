@@ -22,7 +22,7 @@
     "firebase-admin": "^12.1.1",
     "firebase-tools": "^13.10.2",
     "magic-sdk": "^28.0.3",
-    "moralis": "^2.26.2",
+    "moralis": "^2.26.3",
     "moralis-v1": "^1.13.0",
     "next": "13.5.3",
     "next-auth": "^4.24.7",

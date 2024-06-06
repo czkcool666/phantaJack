@@ -1,0 +1,21 @@
+.blinking-text {
+  display: inline-block;
+  font-size: 6rem;
+  font-weight: bold;
+  font-family: 'Lobster', cursive;
+  color: white;
+}
+
+.blinking-text span {
+  display: inline-block;
+  animation: blink 5.0s infinite; /* Adjusted to 8 seconds to include the wait time */
+}
+
+@keyframes blink {
+  0%, 12.5%, 100% {
+    opacity: 1;
+  }
+  6.25% {
+    opacity: 0;
+  }
+}

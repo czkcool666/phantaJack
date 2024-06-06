@@ -3,7 +3,7 @@ import '../styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { initializeApp, getApps } from 'firebase/app';
-import { auth, provider, db } from 'firebaseClient'; // Ensure the import path is correct
+import { auth, provider, db } from '../firebaseClient'; // Ensure the import path is correct
 
 let magic;
 
