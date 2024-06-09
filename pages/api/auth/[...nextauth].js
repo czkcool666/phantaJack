@@ -1,37 +1,30 @@
 import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import Moralis from 'moralis';
+import GoogleProvider from 'next-auth/providers/google';
 
 export default NextAuth({
   providers: [
-    CredentialsProvider({
-      name: 'Magic',
-      credentials: {
-        message: { label: "Message", type: "text", placeholder: "0x0" },
-        signature: { label: "Signature", type: "text" }
+    GoogleProvider({
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET ?? "",
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          scope: 'openid profile email',
+        },
       },
-      authorize: async (credentials) => {
-        try {
-          const { message, signature } = credentials;
-          const user = await Moralis.Cloud.run("verifyUser", { message, signature });
-          return user ? user : null;
-        } catch (e) {
-          return null;
-        }
-      }
-    })
+    }),
   ],
   callbacks: {
-    async jwt(token, user) {
-      if (user) {
-        token.id = user.id;
+    async jwt({ token, account }) {
+      if (account) {
+        token.idToken = account.id_token;
       }
       return token;
     },
-    async session(session, token) {
-      session.user.id = token.id;
+    async session({ session, token }) {
+      session.idToken = token.idToken;
       return session;
-    }
+    },
   },
-  secret: process.env.NEXTAUTH_SECRET
 });

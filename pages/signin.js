@@ -4,7 +4,8 @@ import { signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut, onA
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from 'firebaseClient'; // Ensure the import path is correct
 import axios from 'axios';
-import Moralis from 'moralis'; // Import Moralis
+import Moralis, { authenticateWithMagic, getCurrentUser } from './moralis'; // Import the customized Moralis
+import { Magic } from 'magic-sdk'; // Import Magic SDK
 import BlinkingText from './BlinkingText'; // Import the BlinkingText component
 
 const SignIn = () => {
@@ -17,27 +18,8 @@ const SignIn = () => {
   const [isGoogleLoginPending, setIsGoogleLoginPending] = useState(false);
   const [moralisLoginStatus, setMoralisLoginStatus] = useState(''); // State for Moralis login status
   const [isMoralisLoggedIn, setIsMoralisLoggedIn] = useState(false); // State for Moralis login status
+  const [magic, setMagic] = useState(null); // State for Magic instance
 
-  // Flag to track initialization status
-  let isMoralisInitialized = false;
-
-  // Function to initialize Moralis once
-  const initializeMoralisOnce = async () => {
-    try {
-      if (!isMoralisInitialized) {
-        console.log('Starting Moralis...');
-        await Moralis.start({ apiKey: process.env.NEXT_PUBLIC_MORALIS_API_KEY });
-        console.log('Moralis started successfully');
-        isMoralisInitialized = true; // Set the flag to true after initialization
-      } else {
-        console.log('Moralis already initialized');
-      }
-    } catch (error) {
-      console.error('Error initializing Moralis:', error);
-    }
-  };
-
-  // Memoized function to fetch Moralis wallet info
   const fetchMoralisWalletInfo = useCallback(async (userId, address) => {
     console.log('Fetching Moralis wallet info for address:', address); // Logging address
     if (!address) {
@@ -47,52 +29,53 @@ const SignIn = () => {
 
     try {
       setMoralisLoginStatus('Connecting to Moralis...');
-      await initializeMoralisOnce();
-
+      
       const balance = await Moralis.Web3API.account.getNativeBalance({ address });
       const ethBalance = Moralis.Units.FromWei(balance.balance);
       console.log('Balance fetched:', ethBalance);
 
-      const moralisUser = Moralis.User.current();
-      let profileName = moralisUser ? moralisUser.get('username') : null;
+      const moralisUser = getCurrentUser();
+      console.log('Moralis current user:', moralisUser); // Add log to check moralisUser
 
-      if (!profileName) {
-        profileName = `User_${Math.floor(Math.random() * 1000000)}`;
-        if (moralisUser) {
+      if (moralisUser) {
+        let profileName = moralisUser.get('username');
+
+        if (!profileName) {
+          profileName = `User_${Math.floor(Math.random() * 1000000)}`;
           moralisUser.set('username', profileName);
           await moralisUser.save();
           console.log("New Moralis user profile name created: ", profileName);
         }
+
+        setMoralisProfileName(profileName);
+        setMoralisBalance(ethBalance);
+        setMoralisLoginStatus('Connected to Moralis');
+
+        const docRef = doc(db, 'moralis-accounts', userId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          await saveMoralisAccountData(userId, profileName, ethBalance);
+        }
+
+        console.log('Moralis profile name:', profileName);
+        console.log('Moralis balance:', ethBalance);
+      } else {
+        console.error('Moralis user is null');
       }
-
-      setMoralisProfileName(profileName);
-      setMoralisBalance(ethBalance);
-      setMoralisLoginStatus('Connected to Moralis');
-
-      const docRef = doc(db, 'moralis-accounts', userId);
-      const docSnap = await getDoc(docRef);
-
-      if (!docSnap.exists()) {
-        await saveMoralisAccountData(userId, profileName, ethBalance);
-      }
-      
-      console.log('Moralis profile name:', profileName);
-      console.log('Moralis balance:', ethBalance);
     } catch (error) {
       setMoralisLoginStatus('Failed to connect to Moralis');
       console.error('Error fetching Moralis wallet info:', error);
     }
   }, []);
 
-  // Function to check if Moralis is already logged in
   const checkMoralisLoginStatus = useCallback(async () => {
     try {
       console.log('Checking Moralis login status...');
-      await initializeMoralisOnce();
-      console.log('Moralis initialized for login status check');
+      
+      const moralisUser = getCurrentUser();
+      console.log('Moralis current user:', moralisUser); // Add log to check moralisUser
 
-      const moralisUser = Moralis.User.current();
-      console.log('Moralis current user:', moralisUser);
       if (moralisUser) {
         console.log("Moralis user is already logged in:", moralisUser);
         setIsMoralisLoggedIn(true);
@@ -110,6 +93,11 @@ const SignIn = () => {
   }, [fetchMoralisWalletInfo]);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const magicInstance = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
+      setMagic(magicInstance);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
@@ -242,6 +230,33 @@ const SignIn = () => {
     }
   };
 
+  const handleMagicLogin = async () => {
+    console.log('Magic Link Login Clicked');
+    try {
+      if (!user) {
+        console.error('No user logged in with Google.');
+        return;
+      }
+      const email = user.email; // Assuming user is already logged in with Google
+      const didToken = await magic.auth.loginWithMagicLink({ email });
+      console.log('Magic Link didToken:', didToken);
+
+      // Authenticate with Moralis using didToken
+      const moralisUser = await authenticateWithMagic(didToken);
+      if (moralisUser) {
+        const address = moralisUser.get('ethAddress');
+        setMetaMaskAccount(address); // Using the same state for MagicLink account
+        fetchMoralisWalletInfo(user.uid, address);
+
+        console.log('Magic Link login successful');
+      } else {
+        console.error('Failed to authenticate with Moralis using MagicLink');
+      }
+    } catch (error) {
+      console.error('Error during Magic Link login:', error);
+    }
+  };
+
   const handleLogout = async () => {
     console.log('Logout Clicked');
     try {
@@ -299,7 +314,7 @@ const SignIn = () => {
           )}
           {metaMaskAccount && (
             <>
-              <p><strong>MetaMask Account:</strong> {metaMaskAccount}</p>
+              <p><strong>Account Address:</strong> {metaMaskAccount}</p>
             </>
           )}
           {moralisProfileName && (
@@ -321,6 +336,14 @@ const SignIn = () => {
           >
             Logout
           </button>
+          {!isMoralisLoggedIn && (
+            <button
+              onClick={handleMagicLogin}
+              className="common-btn bg-gradient-to-r from-purple-500 via-blue-500 to-green-500 hover:from-purple-700 hover:via-blue-700 hover:to-green-700 text-white font-bold py-2 px-4 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 mt-4"
+            >
+              Connect Moralis with Magic Link
+            </button>
+          )}
         </div>
       )}
     </div>
