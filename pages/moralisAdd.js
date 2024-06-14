@@ -1,47 +1,83 @@
 import axios from 'axios';
 import Web3 from 'web3';
+import { Magic } from 'magic-sdk';
 
-const MORALIS_API_KEY = process.env.NEXT_PUBLIC_MORALIS_API_KEY;
+let currentUser = null; // Variable to store the current user
 
-export const authenticateWithMoralis = async (provider) => {
+const authenticateWithMetaMask = async () => {
   try {
-    const web3 = new Web3(provider);
-    const accounts = await web3.eth.getAccounts();
-    const address = accounts[0];
+    // Request user connection to MetaMask
+    if (typeof window !== 'undefined' && window.ethereum) {
+      const web3 = new Web3(window.ethereum);
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const accounts = await web3.eth.getAccounts();
+      const ethAddress = accounts[0];
 
-    // Request message from Moralis
-    const messageResponse = await axios.post('https://deep-index.moralis.io/api/v2/auth/requestMessage', {
-      address,
-      chain: 'eth',
-      networkType: 'evm',
-    }, {
-      headers: {
-        'X-API-Key': MORALIS_API_KEY,
-      },
-    });
+      // Fetch balance using Web3
+      const balance = await web3.eth.getBalance(ethAddress);
+      const ethBalance = Web3.utils.fromWei(balance, 'ether');
 
-    const { message } = messageResponse.data;
+      // Set currentUser details
+      currentUser = {
+        ethAddress: ethAddress,
+        balance: ethBalance,
+      };
 
-    // Sign the message
-    const signature = await web3.eth.personal.sign(message, address);
-
-    // Verify the signature with Moralis API
-    const verifyResponse = await axios.post('https://deep-index.moralis.io/api/v2/auth/verify', {
-      message,
-      signature,
-    }, {
-      headers: {
-        'X-API-Key': MORALIS_API_KEY,
-      },
-    });
-
-    if (verifyResponse.data.success) {
-      return { address, signature, token: verifyResponse.data.token };
+      console.log('User authenticated with MetaMask:', currentUser);
+      return currentUser;
     } else {
-      throw new Error('Moralis authentication failed');
+      throw new Error('MetaMask is not installed.');
     }
   } catch (error) {
-    console.error('Error authenticating with Moralis:', error);
+    console.error('Error during MetaMask authentication:', error);
     throw error;
   }
 };
+
+const authenticateWithMagic = async (didToken) => {
+  try {
+    const response = await axios.post('/api/verify-magic-token', { didToken });
+    const { user, token } = response.data;
+
+    if (!user || !token) {
+      throw new Error('Failed to verify Magic token');
+    }
+
+    // Initialize Web3 with Magic provider
+    const magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY);
+    const web3 = new Web3(magic.rpcProvider);
+
+    // Get the user's Ethereum address
+    const accounts = await web3.eth.getAccounts();
+    const ethAddress = accounts[0];
+
+    // Fetch the user's balance
+    const balanceResponse = await axios.get(`https://deep-index.moralis.io/api/v2/${ethAddress}/balance?chain=eth`, {
+      headers: {
+        'X-API-Key': process.env.NEXT_PUBLIC_MORALIS_API_KEY,
+      },
+    });
+
+    const balance = Web3.utils.fromWei(balanceResponse.data.balance, 'ether');
+
+    // Manually set the current user
+    currentUser = {
+      email: user.email,
+      ethAddress: ethAddress,
+      sessionToken: token,
+      balance: balance, // Add the balance to the currentUser object
+    };
+
+    console.log('User authenticated with MagicLink:', currentUser);
+    return currentUser;
+  } catch (error) {
+    console.error('Error during Magic authentication:', error);
+    throw error;
+  }
+};
+
+const getCurrentUser = () => {
+  return currentUser;
+};
+
+export { authenticateWithMetaMask, authenticateWithMagic, getCurrentUser };
