@@ -9,11 +9,33 @@ body {
   box-sizing: border-box;
 }
 
-.bg-dark-tech {
-  background-color: #1a1a1a; /* Dark tech-themed color */
+:root {
+  --background-color: #ecf3fc;
+  --text-color: #000000;
+  --button-background: #f0f0f0;
+  --button-text-color: #ffffff;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #1a1a1a; /* Dark tech-themed color */
+    --text-color: #000000;
+    --button-background: #333333;
+    --button-text-color: #ffffff;
+  }
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
 
 .common-btn {
   width: 13rem; /* Adjust this value as needed */
+  background-color: var(--button-background);
+  color: var(--button-text-color);
+}
+
+.bg-dark-tech {
+  background-color: var(--background-color); /* Dark tech-themed color */
 }

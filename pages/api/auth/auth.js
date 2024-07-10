@@ -1,5 +1,5 @@
-// /pages/api/auth.js
-import { auth, db } from 'firebaseAdmin';
+s// /pages/api/auth.js
+import { auth, db } from '@/firebase/firebaseAdmin';
 
 export default async (req, res) => {
   if (req.method === 'POST') {

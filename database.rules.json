@@ -1,0 +1,23 @@
+{
+  "rules_version": "2",
+  "service": {
+    "firebase.storage": {
+      "match": {
+        "/b/{bucket}/o": {
+          "match": {
+            "/{allPaths=**}": {
+              "allow": {
+                "read": "request.time < timestamp.date(2024, 7, 25)",
+                "write": "request.time < timestamp.date(2024, 7, 25)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "rules": {
+    ".read": "now < 1719590400000",
+    ".write": "now < 1719590400000"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "default": "phantafield-424104"
+  },
+  "dataconnectEmulatorConfig": {
+    "postgres": {
+      "localConnectionString": "postgresql://localhost:5432?sslmode=disable"
+    }
+  }
+}

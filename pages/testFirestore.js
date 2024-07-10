@@ -1,6 +1,6 @@
 // pages/testFirestore.js
 import { useEffect, useState } from 'react';
-import { saveUserData, getUserData } from '../firebaseClient'; // Ensure the import path is correct
+import { saveUserData, getUserData } from '../src/firebase/firebaseClient'; // Ensure the import path is correct
 
 const TestFirestore = () => {
   const [userData, setUserData] = useState(null);

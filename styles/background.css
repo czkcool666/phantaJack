@@ -1,0 +1,108 @@
+:root {
+  --bubble-color-1: hsl(212, 100%, 71%);
+  --bubble-border-1: hsl(212, 100%, 81%);
+  --bubble-color-2: hsl(212, 100%, 51%);
+  --bubble-border-2: hsl(212, 100%, 61%);
+  --bubble-color-3: hsl(212, 100%, 31%);
+  --bubble-border-3: hsl(212, 100%, 41%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bubble-color-1: hsl(212, 100%, 51%); 
+    --bubble-border-1: hsl(212, 100%, 61%);
+    --bubble-color-2: hsl(212, 100%, 31%);
+    --bubble-border-2: hsl(212, 100%, 41%);
+    --bubble-color-3: hsl(212, 100%, 21%); 
+    --bubble-border-3: hsl(212, 100%, 31%); 
+  }
+}
+
+/* styles/background.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--background-color); /* Use CSS variable for background color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2; /* Ensure the background is behind other content */
+}
+
+.bubble {
+  width: 50vmin;
+  height: 50vmin;
+  background: var(--bubble-color-1);
+  border: calc(50vmin * 0.09) solid var(--bubble-border-1);
+  position: absolute;
+  top: calc(50% - 50vmin * 0.49);
+  left: calc(50% - 50vmin * 0.49);
+  overflow: visible;
+  border-radius: 48% 40% 62% 47% / 61% 49% 64% 43%;
+  animation: rotate 35s infinite linear, changeShape 7s infinite;
+  z-index: -1; /* Ensure the bubble is part of the background */
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(1turn);
+  }
+}
+
+.bubble:before {
+  content: '';
+  position: absolute;
+  top: calc(50vmin * 0.1);
+  left: calc(50vmin * 0.1);
+  width: calc(100% - 50vmin * 0.3);
+  height: calc(100% - 50vmin * 0.3);
+  background: var(--bubble-color-2);
+  border: calc(50vmin * 0.065) solid var(--bubble-border-2);
+  border-radius: 41% 40% 50% 55% / 49% 52% 51% 43%;
+  z-index: -2;
+  animation: rotateBefore 35s infinite linear;
+}
+
+@keyframes rotateBefore {
+  0% {
+    transform: rotate(-2turn);
+  }
+}
+
+.bubble:after {
+  content: '';
+  position: absolute;
+  top: calc(50vmin * 0.2);
+  left: calc(50vmin * 0.2);
+  width: calc(100% - 50vmin * 0.5);
+  height: calc(100% - 50vmin * 0.5);
+  background: var(--bubble-color-3);
+  border: calc(50vmin * 0.05) solid var(--bubble-border-3);
+  border-radius: 42% 63% 51% 60% / 47% 62% 42% 52%;
+  animation: rotateAfter 35s infinite linear;
+}
+
+@keyframes rotateAfter {
+  0% {
+    transform: rotate(2turn);
+  }
+}
+
+@keyframes changeShape {
+  0%, 100% {
+    border-radius: 48% 40% 62% 47% / 61% 49% 64% 43%;
+  }
+  50% {
+    border-radius: 50%;
+  }
+}
