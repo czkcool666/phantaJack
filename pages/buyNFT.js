@@ -1,17 +1,20 @@
+// pages/buyNFT.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { auth } from '../src/firebase/firebaseClient'; // Corrected import path for firebaseClient
-import { signOut } from 'firebase/auth'; // Import the signOut function from firebase/auth
+import { auth } from '../src/firebase/firebaseClient';
+import { signOut } from 'firebase/auth';
 import BlinkingText from './BlinkingText';
 import '../styles/background.css';
-import buyWithMetaMask from './buyWithMetaMask'; // Import the buyWithMetaMask function
-import { initWeb3Auth, buyWithWeb3Auth } from './buyWithWeb3Auth'; // Import the Web3Auth functions
+import buyWithMetaMask from './buyWithMetaMask';
+import { signinMagicLink } from './signinMagiclink';
+import {buyWithWeb3Auth} from './buyWithWeb3Auth'; // Import the custom hook
 
 const BuyNFT = () => {
   const router = useRouter();
   const [userName, setUserName] = useState('');
-  const [nftPrice, setNftPrice] = useState(0.008); // Set the NFT price to 0.008 ETH for the development stage
+  const [nftPrice, setNftPrice] = useState(0.008); // NFT price in ETH
   const [message, setMessage] = useState('');
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -27,10 +30,6 @@ const BuyNFT = () => {
   }, [router]);
 
   useEffect(() => {
-    initWeb3Auth();
-  }, []);
-
-  useEffect(() => {
     const { status } = router.query;
     if (status === 'success') {
       setMessage('Purchase Success');
@@ -44,8 +43,12 @@ const BuyNFT = () => {
     setMessage(result.message);
   };
 
+  const handleMagiclinkPayment = async () => {
+    await signinMagicLink();
+  };
+
   const handleWeb3AuthPayment = async () => {
-    const result = await buyWithWeb3Auth(nftPrice);
+    const result = await buyWithWeb3Auth(nftPrice); // Using the hook function
     setMessage(result.message);
   };
 
@@ -75,8 +78,15 @@ const BuyNFT = () => {
           </button>
 
           <button
-            onClick={handleWeb3AuthPayment}
+            onClick={handleMagiclinkPayment}
             className="common-btn bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-2 px-4 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 mt-4 w-full"
+          >
+            Pay with Magic.link
+          </button>
+
+          <button
+            onClick={handleWeb3AuthPayment} // New button for Web3Auth payment
+            className="common-btn bg-gradient-to-r from-teal-500 via-green-500 to-lime-500 hover:from-teal-700 hover:via-green-700 hover:to-lime-700 text-white font-bold py-2 px-4 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 mt-4 w-full"
           >
             Pay with Web3Auth
           </button>

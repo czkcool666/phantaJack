@@ -9,10 +9,11 @@ contract MyNFT is ERC721, Ownable {
     uint256 public constant MINT_PRICE = 0.0001 ether;
     address payable public recipient;
 
-    constructor() ERC721("MyNFT", "NFT") Ownable(msg.sender)  {
+    constructor() ERC721("MyNFT", "NFT") Ownable(msg.sender) {
         recipient = payable(0xE25696E15dd5776F1410647e24c242385A39E973); // Set the recipient address
     }
 
+    // Original mint function to maintain compatibility
     function mint() public payable {
         require(msg.value >= MINT_PRICE, "Not enough ether sent");
 
@@ -22,6 +23,20 @@ contract MyNFT is ERC721, Ownable {
         // Mint the NFT to the sender's address
         _mint(msg.sender, nextTokenId);
         nextTokenId++;
+    }
+
+    // New mint function to comply with Magic's requirements
+    function mint(address _userWallet, uint256 _quantity) external payable {
+        require(msg.value >= MINT_PRICE * _quantity, "Not enough ether sent");
+
+        // Transfer the ETH to the recipient
+        recipient.transfer(msg.value);
+
+        for (uint256 i = 0; i < _quantity; i++) {
+            // Mint the NFT to the specified user wallet
+            _mint(_userWallet, nextTokenId);
+            nextTokenId++;
+        }
     }
 
     // Simulate minting without requiring ETH

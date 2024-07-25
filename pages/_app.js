@@ -1,3 +1,4 @@
+
 // pages/_app.js
 import '../styles/globals.css';
 import '../styles/background.css';
@@ -66,3 +67,4 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 }
 
 export default MyApp;
+
