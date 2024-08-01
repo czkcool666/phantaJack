@@ -1,8 +1,9 @@
 // src/firebase/firebaseClient.js
 import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import 'firebase/compat/auth';  // Add this line for compat layer
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -18,15 +19,14 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 console.log("Firebase initialized:", app.name);
 
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
 if (typeof window !== 'undefined') {
   self.FIREBASE_APPCHECK_DEBUG_TOKEN = '9D05715E-AB57-4B23-B446-95A239E1843D';
-  const appCheck = initializeAppCheck(app, {
+  initializeAppCheck(app, {
     provider: new ReCaptchaV3Provider('6LdIce0pAAAAAGDioZCkFwa9jYAmP7le4bweWaYq'),
     isTokenAutoRefreshEnabled: true,
   });
 }
 
-export { auth, provider, db };
+export { auth, db };

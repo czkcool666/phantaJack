@@ -241,10 +241,17 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.19.4", "@babel/runtime@^7.20.13", "@babel/runtime@^7.21.0", "@babel/runtime@^7.23.2", "@babel/runtime@^7.23.9", "@babel/runtime@^7.24.0", "@babel/runtime@^7.24.8", "@babel/runtime@^7.5.5", "@babel/runtime@^7.9.6":
+"@babel/runtime@^7.19.4", "@babel/runtime@^7.20.13", "@babel/runtime@^7.21.0", "@babel/runtime@^7.23.2", "@babel/runtime@^7.23.9", "@babel/runtime@^7.24.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.9.6":
   version "7.24.8"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.24.8.tgz#5d958c3827b13cc6d05e038c07fb2e5e3420d82e"
   integrity sha512-5F7SDGs1T72ZczbRwbGO9lQi0NLjQxzl6i4lJxLxfW9U5UluCSyEJeniWvnhl3/euNiqQVbo8zruhsDfid0esA==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
+"@babel/runtime@^7.24.8":
+  version "7.25.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.25.0.tgz#3af9a91c1b739c569d5d80cc917280919c544ecb"
+  integrity sha512-7dRy4DwXwtzBrPbZflqxnvfxLF8kdZXPkhymtDeFoFqE6ldzjQFgYTtYIFARcLEYDrqfBfYcZt1WqFxRoyC9Rw==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -1427,7 +1434,7 @@
     node-fetch "2.6.7"
     tslib "^2.1.0"
 
-"@firebase/auth-compat@0.5.10":
+"@firebase/auth-compat@0.5.10", "@firebase/auth-compat@^0.5.10":
   version "0.5.10"
   resolved "https://registry.yarnpkg.com/@firebase/auth-compat/-/auth-compat-0.5.10.tgz#7705fc27883a8fafb2e85271e1d5cd7314609276"
   integrity sha512-epDhgNIXmhl9DPuTW9Ec5NDJJKMFIdXBXiQI9O0xNHveow/ETtBCY86srzF7iCacqsd30CcpLwwXlhk8Y19Olg==
@@ -3531,9 +3538,9 @@
     buffer "~6.0.3"
 
 "@solana/web3.js@^1.59.1", "@solana/web3.js@^1.63.1":
-  version "1.95.1"
-  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.95.1.tgz#fcbbaf845309ff7ceb8d3726702799e8c27530e8"
-  integrity sha512-mRX/AjV6QbiOXpWcy5Rz1ZWEH2lVkwO7T0pcv9t97ACpv3/i3tPiqXwk0JIZgSR3wOSTiT26JfygnJH2ulS6dQ==
+  version "1.95.2"
+  resolved "https://registry.yarnpkg.com/@solana/web3.js/-/web3.js-1.95.2.tgz#6f8a0362fa75886a21550dbec49aad54481463a6"
+  integrity sha512-SjlHp0G4qhuhkQQc+YXdGkI8EerCqwxvgytMgBpzMUQTafrkNant3e7pgilBGgjy/iM40ICvWBLgASTPMrQU7w==
   dependencies:
     "@babel/runtime" "^7.24.8"
     "@noble/curves" "^1.4.2"
@@ -4488,9 +4495,9 @@
     "@types/node" "*"
 
 "@types/ws@^8.2.2":
-  version "8.5.11"
-  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.5.11.tgz#90ad17b3df7719ce3e6bc32f83ff954d38656508"
-  integrity sha512-4+q7P5h3SpJxaBft0Dzpbr6lmMaqh0Jr2tbhJZ/luAwvD7ohSCniYkwz/pLxuT2h0EOa6QADgJj1Ko+TzRfZ+w==
+  version "8.5.12"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.5.12.tgz#619475fe98f35ccca2a2f6c137702d85ec247b7e"
+  integrity sha512-3tPRkv1EtkDpzlgyKyI8pGsGZAGPEaXeu0DOj5DI25Ja91bdAYddYHbADRYVrZMRbfW+1l5YwXVDKohDJNQxkQ==
   dependencies:
     "@types/node" "*"
 
@@ -5122,6 +5129,14 @@
   dependencies:
     "@web3auth/base" "^2.1.3"
 
+"@web3auth/base-evm-adapter@^8.12.0":
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/@web3auth/base-evm-adapter/-/base-evm-adapter-8.12.0.tgz#385cd634d7aa68ecd0df0b54171085477811715e"
+  integrity sha512-xkhZet/xL1JP3bPUszBGzLlriCVCN9pWv7JFA4VkSsdroj9w/cTst+gYx2J1zFikaQyBRYka50Ik2uMXwCUiiA==
+  dependencies:
+    "@toruslabs/base-controllers" "^5.9.2"
+    "@web3auth/base" "^8.12.0"
+
 "@web3auth/base-plugin@^2.1.3":
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@web3auth/base-plugin/-/base-plugin-2.1.3.tgz#29d0c3288001d443ed3c42deac99f63add1a5302"
@@ -5169,6 +5184,20 @@
     jwt-decode "^3.1.2"
     loglevel "^1.8.0"
     ts-custom-error "^3.2.2"
+
+"@web3auth/base@^8.12.0":
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/@web3auth/base/-/base-8.12.0.tgz#d4aa88c270ede98d276a515eb01702428a59a961"
+  integrity sha512-ghQBMDTtylNM5HygdKEBpJy9VaRDiYdG2K/wbl5LokGEe0nqAOt7Hx0oG/972iGX5sJ5tnSeb/epppolX3x9Ag==
+  dependencies:
+    "@toruslabs/constants" "^13.4.0"
+    "@toruslabs/http-helpers" "^6.1.1"
+    "@toruslabs/openlogin" "^8.2.1"
+    "@toruslabs/openlogin-jrpc" "^8.1.1"
+    "@toruslabs/openlogin-utils" "^8.2.1"
+    jwt-decode "^4.0.0"
+    loglevel "^1.9.1"
+    ts-custom-error "^3.3.1"
 
 "@web3auth/base@^8.8.0":
   version "8.8.0"
@@ -5241,6 +5270,15 @@
     "@metamask/detect-provider" "^1.2.0"
     "@web3auth/base" "^2.1.3"
     "@web3auth/base-evm-adapter" "^2.1.3"
+
+"@web3auth/metamask-adapter@^8.12.0":
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/@web3auth/metamask-adapter/-/metamask-adapter-8.12.0.tgz#7c6fa87918f361f4867b255efde93342052e1304"
+  integrity sha512-iUlPhpOuZTvXC4oRJgYBpnsQvMwufzDq6i+MwTnV0ABFjrKAEv/ajR0cIx75uORcGaiBtjgZ+AzZGz190maA7Q==
+  dependencies:
+    "@metamask/detect-provider" "^2.0.0"
+    "@web3auth/base" "^8.12.0"
+    "@web3auth/base-evm-adapter" "^8.12.0"
 
 "@web3auth/modal@^8.10.2":
   version "8.10.2"
@@ -8464,6 +8502,11 @@ detect-libc@^1.0.3:
   resolved "https://registry.yarnpkg.com/detect-libc/-/detect-libc-1.0.3.tgz#fa137c4bd698edf55cd5cd02ac559f91a4c4ba9b"
   integrity sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==
 
+dialog-polyfill@^0.4.7:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/dialog-polyfill/-/dialog-polyfill-0.4.10.tgz#c4ea68a0deed4abb59a6a2a025c548b278cd532e"
+  integrity sha512-j5yGMkP8T00UFgyO+78OxiN5vC5dzRQF3BEio+LhNvDbyfxWBsi3sfPArDm54VloaJwy2hm3erEiDWqHRC8rzw==
+
 didyoumean@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/didyoumean/-/didyoumean-1.2.2.tgz#989346ffe9e839b4555ecf5666edea0d3e8ad037"
@@ -10369,7 +10412,7 @@ firebase-tools@^13.13.0:
     ws "^7.2.3"
     yaml "^2.4.1"
 
-firebase@^10.12.3:
+firebase@^10.12.4:
   version "10.12.4"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-10.12.4.tgz#ca2451d1cf999a3e94e2287c56abdd94e043ddb0"
   integrity sha512-SQz49NMpwG4MLTPZ9C8jBp7IyS2haTvsIvjclgu+v/jvzNtjZoxIcoF6A13EIfBHmJ5eiuVlvttxElOf7LnJew==
@@ -10433,6 +10476,14 @@ firebase@^9.15.0:
     "@firebase/storage" "0.11.2"
     "@firebase/storage-compat" "0.3.2"
     "@firebase/util" "1.9.3"
+
+firebaseui@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/firebaseui/-/firebaseui-6.1.0.tgz#a8feb91d2781342599cb8d2c79cc7553e6257612"
+  integrity sha512-5WiVYVxPGMANuZKxg6KLyU1tyqIsbqf/59Zm4HrdFYwPtM5lxxB0THvgaIk4ix+hCgF0qmY89sKiktcifKzGIA==
+  dependencies:
+    dialog-polyfill "^0.4.7"
+    material-design-lite "^1.2.0"
 
 flat-cache@^4.0.0:
   version "4.0.1"
@@ -13401,6 +13452,11 @@ marked@^4.0.14:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/marked/-/marked-4.3.0.tgz#796362821b019f734054582038b116481b456cf3"
   integrity sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==
+
+material-design-lite@^1.2.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/material-design-lite/-/material-design-lite-1.3.0.tgz#d004ce3fee99a1eeb74a78b8a325134a5f1171d3"
+  integrity sha512-ao76b0bqSTKcEMt7Pui+J/S3eVF0b3GWfuKUwfe2lP5DKlLZOwBq37e0/bXEzxrw7/SuHAuYAdoCwY6mAYhrsg==
 
 md5.js@^1.3.4:
   version "1.3.5"
@@ -17210,10 +17266,10 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==
 
-stripe@^16.2.0:
-  version "16.4.0"
-  resolved "https://registry.yarnpkg.com/stripe/-/stripe-16.4.0.tgz#6d6ed3aeb4d5b09aa8ca5fe9462d47ed6ea528ee"
-  integrity sha512-rFIcDJaF+z28BsR4GXoy0YhAjE24D0AymJRsrAS0YbQAIJi0gOO/4mctbhNzrySS+bLVJOQLefdblDQMMNm58Q==
+stripe@^16.5.0:
+  version "16.5.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-16.5.0.tgz#a0126936c52bac8396a33a54c691a2cd9a4512ce"
+  integrity sha512-5qY2Va8pmnqS/dcKsQKJnk9kkYCtS6hqjN7kktZEmdxVohZHvbT9pOWK8UUKRInTXYkCNl6x505tO5416KLPsQ==
   dependencies:
     "@types/node" ">=8.1.0"
     qs "^6.11.0"

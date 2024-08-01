@@ -1,101 +1,65 @@
+import axios from 'axios';
 import Web3 from "web3";
 import { ethers } from "ethers";
-import { nftAddress, nftABI } from '../config';
 import { initializeWeb3Auth } from '../src/web3authInit';
+import { loadStripe } from '@stripe/stripe-js';
+import { nftAddress, nftABI } from '../config';
 
+let web3auth;
 let provider;
 let web3authAddress = null;
-let web3auth;
-let walletServicesPlugin;
 
+const serverUrl = 'http://localhost:4242'; // Update this to your server URL
 
-
-const loginWithWeb3Auth = async () => {
+export const buyWithWeb3Auth = async (usdAmount) => {
   try {
-    const initResult = await initializeWeb3Auth();
-    web3auth = initResult.web3auth;
-    walletServicesPlugin = initResult.walletServicesPlugin;
+    // Retrieve wallet address from local storage
+    const walletAddress = localStorage.getItem('web3authWalletAddress');
 
-    if (!walletServicesPlugin) {
-      throw new Error("WalletServicesPlugin not found");
+    // Create Stripe checkout session
+    const response = await axios.post(`${serverUrl}/create-checkout-session`, { walletAddress, usdAmount });
+    const sessionId = response.data.id;
+
+    // Load Stripe and redirect to checkout
+    const stripe = await loadStripe("pk_test_51PWFIYP2IPixAlzjvAb398QgVwMTjsWLLNEPgWzXu86MENh5Eg0CDrxz4cWn2G3gNPUiJQpyA7LbAXOnbLRa6kWO00o7SW9TqW");
+    const { error } = await stripe.redirectToCheckout({ sessionId });
+
+    if (error) {
+      console.error('Error redirecting to Stripe:', error);
+      return { success: false, message: 'There was an error with the payment. Please try again.' };
     }
-
-    if (!web3auth) {
-      console.log("Web3Auth not initialized. Initializing now...");
-      await web3auth.initModal(); // Ensure the modal is initialized if not done in the init function
-    }
-
-    provider = await web3auth.connect();
-    console.log("Web3Auth connected:", provider);
-
-    const web3 = new Web3(provider);
-    const accounts = await web3.eth.getAccounts();
-    console.log('Web3Auth connected account:', accounts[0]);
-    web3authAddress = accounts[0];
-    walletServicesPlugin.on("connected", () => { walletServicesPlugin.showWalletUi();})
-
-
-    localStorage.setItem('walletAddress', accounts[0]);
-    localStorage.setItem('loginMethod', "web3auth");
-
-    return web3;
   } catch (error) {
-    if (error.message === "User closed the modal") {
-      console.log("User closed the modal");
-      return null;
-    } else {
-      console.error('Error during Web3Auth login:', error);
-      throw error;
-    }
+    console.error('Error creating Stripe checkout session:', error);
+    return { success: false, message: 'There was an error with the payment. Please try again.' };
   }
 };
 
-
-const getEthBalance = async (web3, address) => {
-  const balance = await web3.eth.getBalance(address);
-  return web3.utils.fromWei(balance, 'ether');
-};
-
-const buyWithWeb3Auth = async (nftPrice) => {
+const mintNFTWithStripe = async (nftPrice) => {
   try {
-    const web3 = await loginWithWeb3Auth();
-    if (!web3) {
-      return { success: false, message: 'Authentication was cancelled.' };
-    }
-    const balance = await getEthBalance(web3, web3authAddress);
 
-    if (parseFloat(balance) < nftPrice) {
-      return { success: false, message: 'Insufficient ETH balance. Please deposit more ETH and try again.' };
-    } else {
-      const result = await mintNFTWithETH(nftPrice);
-      return result;
-    }
-  } catch (error) {
-    console.error('Error in buyWithWeb3Auth:', error);
-    return { success: false, message: `Error: ${error.message}` };
-  }
-};
+    const { web3auth  } = await initializeWeb3Auth();
+    const provider = await web3auth.connect();
+ 
+    if (!provider) throw new Error("Provider initialization failed");
 
-const mintNFTWithETH = async (nftPrice) => {
-  try {
+    // Connect to Ethereum provider and contract
     const web3Provider = new ethers.providers.Web3Provider(provider);
     const signer = web3Provider.getSigner();
     const contract = new ethers.Contract(nftAddress, nftABI, signer);
 
-    const tx = await contract.mint({ value: ethers.utils.parseEther(nftPrice.toString()) });
+    // Mint NFT and wait for transaction confirmation
+    const tx = await contract.simulateMint();
     await tx.wait();
 
-    console.log('Transaction sent:', tx);
+    console.log('NFT has been sent successfully', tx);
 
-    localStorage.setItem('walletAddress', web3authAddress);
-    localStorage.setItem('txHash', tx.hash); // Store transaction hash
-
-    window.location.href = `/success?txHash=${tx.hash}&walletAddress=${web3authAddress}`;
+    // Store transaction and wallet address in local storage
+    localStorage.setItem('txHash', tx.hash);
     return { success: true, message: 'Transaction confirmed! You have successfully purchased an NFT.' };
   } catch (error) {
-    console.error('Transaction failed:', error);
+    console.error('NFT failed to be sent', error);
     return { success: false, message: `Error: ${error.message}` };
   }
 };
 
-export { buyWithWeb3Auth, web3authAddress, provider };
+export { web3authAddress, provider, mintNFTWithStripe };

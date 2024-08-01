@@ -1,32 +1,48 @@
-// pages/buyNFT.js
+// buyNFT.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { auth } from '../src/firebase/firebaseClient';
-import { signOut } from 'firebase/auth';
+import { useMoralis } from 'react-moralis'; // Import useMoralis hook
 import BlinkingText from './BlinkingText';
 import '../styles/background.css';
-import buyWithMetaMask from './buyWithMetaMask';
-import { signinMagicLink } from './signinMagiclink';
-import {buyWithWeb3Auth} from './buyWithWeb3Auth'; // Import the custom hook
+import { buyWithMetaMask } from './buyWithMetaMask';
+import { buyWithWeb3Auth } from './buyWithWeb3Auth'; // Remove setNftPriceUsd
+import { initializeWeb3Auth } from '../src/web3authInit'; 
 
 const BuyNFT = () => {
+  const { enableWeb3, isWeb3Enabled } = useMoralis(); // Get Moralis hooks
   const router = useRouter();
-  const [userName, setUserName] = useState('');
-  const [nftPrice, setNftPrice] = useState(0.008); // NFT price in ETH
+  const [userEmail, setUserEmail] = useState('');
+  const [nftPriceEth, setNftPriceEth] = useState(0.008); // NFT price in ETH
+  const [ethToUsdRate, setEthToUsdRate] = useState(null);
   const [message, setMessage] = useState('');
 
-
   useEffect(() => {
-    const fetchUserData = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        setUserName(user.displayName);
-      } else {
-        router.push('/signin');
+    const fetchEthToUsdRate = async () => {
+      try {
+        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd');
+        const data = await response.json();
+        const rate = data.ethereum.usd;
+        setEthToUsdRate(rate);
+      } catch (error) {
+        console.error('Error fetching ETH to USD rate:', error);
       }
     };
 
-    fetchUserData();
+    fetchEthToUsdRate();
+
+    // Ensure Web3 is enabled when the component mounts
+    if (!isWeb3Enabled) {
+      enableWeb3();
+    }
+  }, [isWeb3Enabled]);
+
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('web3authUserEmail');
+    if (storedEmail) {
+      setUserEmail(storedEmail);
+    } else {
+      router.push('/signin');
+    }
   }, [router]);
 
   useEffect(() => {
@@ -39,22 +55,27 @@ const BuyNFT = () => {
   }, [router.query]);
 
   const handleMetaMaskPayment = async () => {
-    const result = await buyWithMetaMask(nftPrice);
+    const result = await buyWithMetaMask(nftPriceEth);
     setMessage(result.message);
-  };
-
-  const handleMagiclinkPayment = async () => {
-    await signinMagicLink();
   };
 
   const handleWeb3AuthPayment = async () => {
-    const result = await buyWithWeb3Auth(nftPrice); // Using the hook function
-    setMessage(result.message);
+    if (ethToUsdRate) {
+      const nftPriceUsd = (nftPriceEth * ethToUsdRate).toFixed(2);
+      const result = await buyWithWeb3Auth(nftPriceUsd);
+      setMessage(result.message);
+    } else {
+      setMessage("Unable to fetch ETH to USD rate.");
+    }
   };
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      const { web3auth } = await initializeWeb3Auth();
+      await web3auth.logout();
+      localStorage.removeItem('web3authWalletAddress');
+      localStorage.removeItem('web3authUserEmail');
+      localStorage.removeItem('loginMethod');
       router.push('/signin');
     } catch (error) {
       console.error('Error during logout:', error);
@@ -67,8 +88,11 @@ const BuyNFT = () => {
       <div className="h-screen flex flex-col items-center justify-center bg-transparent">
         <BlinkingText />
         <div className="mt-8 p-4 bg-white rounded shadow-md flex flex-col items-center">
-          <h4 className="text-2xl font-bold">Hello, {userName}</h4>
-          <h3 className="text-xl">NFT Price: {nftPrice} ETH</h3>
+          <h4 className="text-2xl font-bold">Hello, {userEmail}</h4>
+          <h3 className="text-xl">
+            NFT Price: {nftPriceEth} ETH 
+            {ethToUsdRate && <span> (~${(nftPriceEth * ethToUsdRate).toFixed(2)} USD)</span>}
+          </h3>
 
           <button
             onClick={handleMetaMaskPayment}
@@ -78,17 +102,10 @@ const BuyNFT = () => {
           </button>
 
           <button
-            onClick={handleMagiclinkPayment}
-            className="common-btn bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-bold py-2 px-4 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 mt-4 w-full"
-          >
-            Pay with Magic.link
-          </button>
-
-          <button
-            onClick={handleWeb3AuthPayment} // New button for Web3Auth payment
+            onClick={handleWeb3AuthPayment}
             className="common-btn bg-gradient-to-r from-teal-500 via-green-500 to-lime-500 hover:from-teal-700 hover:via-green-700 hover:to-lime-700 text-white font-bold py-2 px-4 rounded shadow-lg transform hover:scale-105 transition-transform duration-300 mt-4 w-full"
           >
-            Pay with Web3Auth
+            Pay with Stripe
           </button>
 
           <button

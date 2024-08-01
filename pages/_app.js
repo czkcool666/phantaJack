@@ -1,4 +1,3 @@
-
 // pages/_app.js
 import '../styles/globals.css';
 import '../styles/background.css';
@@ -8,6 +7,7 @@ import { initializeApp, getApps } from 'firebase/app';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { MoralisProvider } from 'react-moralis'; // Import MoralisProvider
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -48,23 +48,27 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   }, []);
 
   return (
-    <SessionProvider session={session}>
-      {persister ? (
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={{ persister }}
-          contextSharing={true} // Add contextSharing option
-        >
-          <Component {...pageProps} />
-        </PersistQueryClientProvider>
-      ) : (
-        <QueryClientProvider client={queryClient} contextSharing={true}>
-          <Component {...pageProps} />
-        </QueryClientProvider>
-      )}
-    </SessionProvider>
+    <MoralisProvider
+      initializeOnMount={false}
+      web3ApiKey={process.env.NEXT_PUBLIC_MORALIS_API_KEY} // Use API key for Moralis
+    >
+      <SessionProvider session={session}>
+        {persister ? (
+          <PersistQueryClientProvider
+            client={queryClient}
+            persistOptions={{ persister }}
+            contextSharing={true} // Add contextSharing option
+          >
+            <Component {...pageProps} />
+          </PersistQueryClientProvider>
+        ) : (
+          <QueryClientProvider client={queryClient} contextSharing={true}>
+            <Component {...pageProps} />
+          </QueryClientProvider>
+        )}
+      </SessionProvider>
+    </MoralisProvider>
   );
 }
 
 export default MyApp;
-
